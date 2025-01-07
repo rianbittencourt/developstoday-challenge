@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { CarResults } from "./car-results";
+import { CarResults } from "@/components/CarResults";
 import Make from "@/app/types/carsMakes";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
@@ -9,11 +9,17 @@ export async function generateStaticParams() {
     (currentYear - i).toString()
   );
 
-  const response = await fetch(
-    "https://vpic.nhtsa.dot.gov/api/vehicles/GetMakesForVehicleType/car?format=json"
-  );
-  const data = await response.json();
-  const makes = data.Results;
+  let makes = [];
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/vehicles/GetMakesForVehicleType/car?format=json`
+    );
+    const data = await response.json();
+    makes = data.Results;
+  } catch (error) {
+    console.error("Error fetching makes:", error);
+    makes = [{ MakeId: 441 }];
+  }
 
   const params = makes.flatMap((make: Make) =>
     years.map((year) => ({
@@ -25,13 +31,16 @@ export async function generateStaticParams() {
   return params;
 }
 
-export default function ResultPage({
+export default async function ResultPage({
   params,
 }: {
-  params: { makeId: string; year: string };
+  params: Promise<{ makeId: string; year: string }>;
 }) {
+  const makeId = (await params).makeId;
+  const year = (await params).year;
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100  p-8">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-8">
       <div className="max-w-4xl mx-auto">
         <Suspense
           fallback={
@@ -40,7 +49,7 @@ export default function ResultPage({
             </div>
           }
         >
-          <CarResults makeId={params.makeId} year={params.year} />
+          <CarResults makeId={makeId} year={year} />
         </Suspense>
       </div>
     </div>
