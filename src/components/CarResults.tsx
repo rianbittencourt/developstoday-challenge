@@ -2,6 +2,14 @@ import Link from "next/link";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import EmptyResults from "@/components/EmptyResults";
 import Make from "@/app/types/carsMakes";
+
+interface Model {
+  Make_ID: number;
+  Make_Name: string;
+  Model_ID: number;
+  Model_Name: string;
+}
+
 async function getModels(makeId: string, year: string) {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/vehicles/GetModelsForMakeIdYear/makeId/${makeId}/modelyear/${year}?format=json`
@@ -22,11 +30,12 @@ export async function CarResults({
   makeId: string;
   year: string;
 }) {
-  let models: Make[] = [];
+  let models: Model[] = [];
   let errorMessage = "";
 
   try {
     models = await getModels(makeId, year);
+    console.log(models);
   } catch {
     errorMessage = "Error fetching models. Please try again later.";
   }
@@ -53,14 +62,14 @@ export async function CarResults({
         <EmptyResults />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {models.map((model: Make) => (
+          {models.map((model: Model) => (
             <div
-              key={model.ModelId}
+              key={model.Model_ID}
               className="p-4 rounded-lg border border-gray-200 select-none hover:border-stone-900 transition-colors"
             >
-              <h3 className="font-semibold text-lg mb-1">{model.MakeName}</h3>
+              <h3 className="font-semibold text-lg mb-1">{model.Model_Name}</h3>
               <p className="text-sm text-gray-500 ">
-                {model.MakeName} - {year}
+                {model.Make_Name} - {year}
               </p>
             </div>
           ))}
