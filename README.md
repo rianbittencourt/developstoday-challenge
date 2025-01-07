@@ -1,5 +1,5 @@
 
-# Título do Projeto
+# DevelopsToday Challenge
 
 This project was carried out based on the DevelopsToday challenge
 
