@@ -34,7 +34,6 @@ export async function CarResults({
 
   try {
     models = await getModels(makeId, year);
-    console.log(models);
   } catch {
     errorMessage = "Error fetching models. Please try again later.";
   }
