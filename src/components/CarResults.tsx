@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import EmptyResults from "@/components/EmptyResults";
-import Make from "@/app/types/carsMakes";
 
 interface Model {
   Make_ID: number;
